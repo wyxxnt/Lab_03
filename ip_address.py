@@ -1,15 +1,36 @@
-def ip_to_num(ip):
-    parts = ip.split(".")
-    a = int(parts[0])
-    b = int(parts[1]) 
-    c = int(parts[2])
-    d = int(parts[3])
-    
-    result = a * 256 * 256 * 256 + b * 256 * 256 + c * 256 + d
-    return result
+from functools import reduce
 
-print(ip_to_num("127.0.0.1"))
-print(ip_to_num("10.0.0.1"))
-print(ip_to_num("192.168.1.10"))
-print(ip_to_num("0.0.0.0"))
-print(ip_to_num("8.8.8.8"))
+
+def ip_to_number(address='127.0.0.1'):
+    parts = address.split('.')
+    numbers = []
+    for item in parts:
+        if item == '':
+            numbers.append(0)
+        else:
+            numbers.append(int(item))
+    while len(numbers) < 4:
+        numbers.append(0)
+    limited = numbers[:4]
+
+    def shift(total, value):
+        return (total << 8) + value
+
+    return reduce(shift, limited, 0)
+
+
+def show_ip_examples():
+    samples = [
+        '127.0.0.1',
+        '10.0.0.1',
+        '192.168.1.10',
+        '165.225.133.150',
+        '0.0.0.0',
+        '8.8.8.8',
+    ]
+    for ip in samples:
+        print(ip, '->', ip_to_number(ip))
+
+
+if __name__ == '__main__':
+    show_ip_examples()
